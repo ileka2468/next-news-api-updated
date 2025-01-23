@@ -3,7 +3,7 @@ import {
   fetchNewsFromRSS,
   getRandomNews,
   getSourceNews,
-  getNewsByBias, // Import the new function
+  getNewsByBias,
 } from "@/lib/news/newsScraper";
 import { isValidSource } from "@/lib/news/utils";
 import { Source } from "@/types/news";
@@ -24,7 +24,6 @@ describe("getSourceNews", () => {
     const selectedSource = "US-NYT";
     const result = await getSourceNews(selectedSource);
     expect(result.length > 0).toBe(true);
-    // Optional: Verify that all articles are from the selected source
     result.forEach((article) => {
       expect(article.source).toBe("New York Times");
     });
@@ -35,7 +34,6 @@ describe("getRandomNews", () => {
   it("should return a list of Articles from a random source", async () => {
     const result = await getRandomNews();
     expect(result.length > 0).toBe(true);
-    // Optional: Verify that articles are from one of the news sources
     const validSources = newsSources.map((src) => src.name);
     result.forEach((article) => {
       expect(validSources).toContain(article.source);
@@ -63,7 +61,6 @@ describe("fetchAllSources", () => {
       allSources.push(articles);
     }
     expect(allSources.length === newsSources.length).toBe(true);
-    // Optional: Verify that each source has at least one article
     allSources.forEach((articles, index) => {
       expect(articles.length > 0).toBe(true);
     });
