@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import LRUCache, { LRUCache as LRU } from "lru-cache";
 import { getClientIp } from "./lib/utils";
+import { corsMiddleware } from "./corsMiddleware";
 
 // Define rate-limiting options
 const rateLimitOptions = {
@@ -8,9 +9,9 @@ const rateLimitOptions = {
   ttl: 60 * 1000, // Timeframe in milliseconds
 };
 
-// LRU cache for rate limiting fuckers and spammers
+// LRU cache for rate limiting
 const rateLimitCache = new LRU<string, { count: number; expiry: number }>({
-  max: 8000, // Maximum number of ips before it runs out of memory and server dies
+  max: 8000, // Maximum number of entries
   ttl: rateLimitOptions.ttl,
 });
 
@@ -19,6 +20,12 @@ const isStaticPath = (path: string) => {
 };
 
 export async function middleware(request: NextRequest) {
+  // Apply CORS
+  const corsResponse = corsMiddleware(request);
+  if (corsResponse) {
+    return corsResponse;
+  }
+
   const requestPath = request.nextUrl.pathname;
   const clientIp = getClientIp(request);
 
