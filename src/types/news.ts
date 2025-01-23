@@ -1,7 +1,8 @@
-interface Source {
+export interface Source {
   code: string;
   name: string;
   url: string;
+  politicalBias?: "left" | "right" | "center";
 }
 
 interface BaseArticle {
