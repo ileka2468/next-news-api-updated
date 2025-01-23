@@ -27,7 +27,7 @@ export const isLink = (link: string) => {
 };
 
 export const getClientIp = (request: NextRequest) => {
-  let ip = request.ip ?? request.headers.get("x-real-ip");
+  let ip = request.headers.get("x-real-ip");
   const forwardedFor = request.headers.get("x-forwarded-for");
   if (!ip && forwardedFor) {
     ip = forwardedFor.split(",").at(0) ?? null;

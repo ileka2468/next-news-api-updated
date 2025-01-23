@@ -4,8 +4,6 @@ import { getRandomNews } from "@/lib/news/newsScraper";
 import { ServerException } from "@/exceptions/server";
 import { makeSuccessResponse } from "@/lib/utils";
 
-export const runtime = "edge";
-
 export async function GET(request: Request) {
   try {
     const articles = await getRandomNews();

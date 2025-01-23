@@ -5,7 +5,7 @@ export interface Source {
   politicalBias?: "left" | "right" | "center";
 }
 
-interface BaseArticle {
+export interface BaseArticle {
   title: string;
   link: string;
   description?: string;

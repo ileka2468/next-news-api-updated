@@ -2,17 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import LRUCache, { LRUCache as LRU } from "lru-cache";
 import { getClientIp } from "./lib/utils";
 
-// Extend NextRequest for geo typing
-interface GeoLocation {
-  country?: string;
-}
-
-declare module "next/server" {
-  interface NextRequest {
-    geo?: GeoLocation;
-  }
-}
-
 // Define rate-limiting options
 const rateLimitOptions = {
   max: 300, // Maximum requests
@@ -21,7 +10,7 @@ const rateLimitOptions = {
 
 // LRU cache for rate limiting fuckers and spammers
 const rateLimitCache = new LRU<string, { count: number; expiry: number }>({
-  max: 5000, // Maximum number of ips before i run out of memory and server dies
+  max: 8000, // Maximum number of ips before it runs out of memory and server dies
   ttl: rateLimitOptions.ttl,
 });
 
@@ -40,7 +29,7 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  const country = request.geo?.country ?? "Unknown";
+  const country = (request as any).geo?.country ?? "Unknown";
 
   if (isStaticPath(requestPath)) {
     return NextResponse.next();
@@ -60,7 +49,7 @@ export async function middleware(request: NextRequest) {
     if (entry) {
       const updatedCount = entry.count + 1;
       if (updatedCount > rateLimitOptions.max && now < entry.expiry) {
-        console.log(`[${new Date().toISOString()}] Rate limited: ${clientIp}`);
+        console.log(`[Rate Limited]: ${clientIp}`);
         return NextResponse.json(
           {
             error: "Too many requests, please try again later.",
@@ -80,16 +69,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  console.log(
-    `[${new Date().toISOString()}] ${
-      request.method
-    } ${clientIp} (${country}) -> ${requestPath}`
-  );
+  console.log(`${request.method} ${clientIp} (${country}) -> ${requestPath}`);
 
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Matching all routes
 export const config = {
   matcher: ["/:path*"],
 };

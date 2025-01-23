@@ -5,8 +5,6 @@ import { validateSource } from "@/lib/news/utils";
 import { ServerException } from "@/exceptions/server";
 import { makeSuccessResponse } from "@/lib/utils";
 
-export const runtime = "edge";
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const source: string | null = searchParams.get("code");

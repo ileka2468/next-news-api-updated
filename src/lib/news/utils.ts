@@ -3,6 +3,7 @@ import { Cheerio, AnyNode } from "cheerio";
 import { isLink, cleanseText, cleanseHtmlTags } from "@/lib/utils";
 import { newsSources } from "@/lib/news/constants";
 import { BadRequest } from "@/exceptions/server";
+import { BaseArticle } from "@/types/news";
 
 export const isValidSource = (sourceName: string) =>
   !!newsSources.find((src) => src.code === sourceName.toUpperCase());
